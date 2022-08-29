@@ -1,0 +1,19 @@
+version: "1.0"
+
+action: 
+  name: "Convert to .mp4"
+  id: "ap::cvmp4"
+  type: command
+
+  command: "ffmpeg.exe" 
+  arguments: "-i ${path} ${filename}.mp4"
+
+  register:
+    file: 
+      filter: "*.mov;*.mkv;"
+
+  toast:
+    success:
+      message: "Convert Success"
+    error:
+      message: "Convert Fail"    
