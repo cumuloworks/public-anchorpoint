@@ -1,0 +1,31 @@
+# Anchorpoint Markup Language
+# Predefined Variables: e.g. ${path}
+# Environment Variables: e.g. ${MY_VARIABLE}
+# Full documentation: https://docs.anchorpoint.app/Actions/Reference
+
+version: 1.0
+action:
+  name: Create MP4
+
+  version: 1
+  id: user::AQEG8W5VID
+  category: user
+  type: command
+  author: "Cumuloworks "
+  description: "Convert video files to MP4(H.264)."
+  icon:
+    path: :/icons/refresh.svg
+
+  command: "ffmpeg"
+  arguments: "-i ${path} ${filename}.mp4"
+
+  register:
+    file:
+      enable: true
+      filter: "*.mov"
+  
+  toast:
+    success:
+      message: "Successfully converted."
+    error:
+      message: "Something went wrong."

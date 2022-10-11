@@ -1,0 +1,31 @@
+# Anchorpoint Markup Language
+# Predefined Variables: e.g. ${path}
+# Environment Variables: e.g. ${MY_VARIABLE}
+# Full documentation: https://docs.anchorpoint.app/Actions/Reference
+
+version: 1.0
+action:
+  name: RNDR Downloader
+
+  version: 1
+  id: user::90Q7D1LHAS
+  category: user
+  type: command
+  author: "Cumuloworks "
+  description: "Download from RNDR"
+  icon:
+    path: :/icons/download.svg
+
+  command: "aria2c.exe" 
+  arguments: "-i ${path} -x 16 -c"
+
+  register:
+    file:
+      enable: true
+      filter: "*.txt;*.csv"
+  
+  toast:
+    success:
+      message: "Download started."
+    error:
+      message: "Something went wrong."    
