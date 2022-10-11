@@ -7,7 +7,7 @@ version: "1.0"
 
 action:
   #Must Have Properties
-  name: "Video Conversion"
+  name: "Cumuloworks' Package"
 
   #Optional Properties
   version: 1
@@ -19,10 +19,10 @@ action:
   description: Cumuloworks' Package
   details: '
     <p>Actions created by Cumuloworks.</p>
-    <p><img src = "https://raw.githubusercontent.com/Anchorpoint-Software/ap-actions-data/main/png/videoConversion.png" width="400"></p>
+    <p><img src = "https://pbs.twimg.com/media/FVXsKgIaIAEyuFP?format=jpg&name=small" width="400"></p>
     '
   icon:
-    path: "icons/packageIcon.svg"
+    path: "icons/action.svg"
 
   actions:
     - user::90Q7D1LHAS
