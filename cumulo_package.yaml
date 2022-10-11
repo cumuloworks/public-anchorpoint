@@ -22,7 +22,7 @@ action:
     <p><img src = "https://pbs.twimg.com/media/FVXsKgIaIAEyuFP?format=jpg&name=small" width="400"></p>
     '
   icon:
-    path: "icons/action.svg"
+    path: ":/icons/action.svg"
 
   actions:
     - user::90Q7D1LHAS
