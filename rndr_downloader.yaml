@@ -3,7 +3,7 @@
 # Environment Variables: e.g. ${MY_VARIABLE}
 # Full documentation: https://docs.anchorpoint.app/Actions/Reference
 
-version: 1.0
+version: 1.1
 action:
   name: RNDR Downloader
 
@@ -17,7 +17,7 @@ action:
     path: :/icons/download.svg
 
   command: "aria2c.exe" 
-  arguments: "-i ${path} -d .\${filename} -x 16 -c"
+  arguments: "-i ${path} -d ${filename} -x 16 -c"
 
   register:
     file:
