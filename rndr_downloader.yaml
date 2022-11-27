@@ -17,7 +17,7 @@ action:
     path: :/icons/download.svg
 
   command: "aria2c.exe" 
-  arguments: "-i ${path} -x 16 -c"
+  arguments: "-i ${path} -d .\${filename} -x 16 -c"
 
   register:
     file:
