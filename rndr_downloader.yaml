@@ -3,7 +3,7 @@
 # Environment Variables: e.g. ${MY_VARIABLE}
 # Full documentation: https://docs.anchorpoint.app/Actions/Reference
 
-version: 1.1
+version: 1.0
 action:
   name: RNDR Downloader
 
