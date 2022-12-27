@@ -53,14 +53,6 @@ def get_filename_text():
     new_filename = os.path.basename(new_path)
     return f"This will create a new file: <b>{new_filename}</b>"
 
-def update_dialog(dialog: ap.Dialog, value = None):
-    remove = dialog.get_value("remove")
-    dialog.hide_row("newaudiotext", remove)
-    dialog.hide_row("newaudioinfo", remove)
-    dialog.hide_row("longest", remove)
-    dialog.hide_row("longestinfo", remove)
-    dialog.set_value("filename", get_filename_text())
-
 def run_ffmpeg(arguments, remove_audio):
     ui.show_busy(input_path)
     platform_args = {}
@@ -129,17 +121,12 @@ def create_dialog():
     settings.remove("filename")
 
     dialog = ap.Dialog()
-    dialog.title = "Change Audio"
-    dialog.icon = os.path.join(ctx.yaml_dir, "icons/audio.svg")
+    dialog.title = "Compare Videos..."
+    dialog.icon = ctx.icon
     dialog.add_text(get_filename_text(), var="filename")
-    dialog.add_switch(var="remove", default=remove_audio, callback=update_dialog).add_text("Remove Audio")
-    dialog.add_info("Remove the audio channels from the video, or replace the existing audio with new tunes")
-    dialog.add_text("New Audio", var="newaudiotext").add_input(browse=ap.BrowseType.File, var="newaudioinput", browse_path=input_folder).hide_row(hide=remove_audio)
-    dialog.add_info("Select an audio file (e.g. wav) that will become the new audio of the video file", var="newaudioinfo").hide_row(hide=remove_audio)
-    dialog.add_checkbox(var="longest", default=True, callback=update_dialog).add_text("Take longest length").hide_row(hide=remove_audio)
-    dialog.add_info("Fits the final result to the longer file (video or audio). Otherwise it cuts off the rest", var="longestinfo").hide_row(hide=remove_audio)
-
-    dialog.add_button("Convert", callback=convert)
+    dialog.add_text("Compare to", var="input2text").add_input(browse=ap.BrowseType.File, var="input2", browse_path=input_folder)
+    dialog.add_info("Select a video file to be compared.", var="info")
+    dialog.add_button("Compare", callback=convert)
 
     dialog.show(settings)
 
