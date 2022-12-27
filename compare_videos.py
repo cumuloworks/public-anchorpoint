@@ -4,12 +4,30 @@ import apsync as aps
 import os
 import ffmpeg_helper
 import subprocess
-
+import re
+import sys
+import matplotlib.pyplot as plt
 
 ctx = ap.Context.instance()
 ui = ap.UI()
 
 input1 = ctx.path
+
+def compare(dialog: ap.Dialog):
+    input2 = dialog.get_value("input2")
+    ffmpeg_path = ffmpeg_helper.get_ffmpeg_fullpath()
+    result_path = ctx.folder + "/psnr.txt"
+    arguments = [
+            ffmpeg_path,                
+            "-i", input1,
+            "-i", input2,
+            "-lavfi", "scale2ref,psnr=stats_file=-",
+            "-an",
+            "-f", "null",
+            "-"
+        ]
+    dialog.close()
+    ctx.run_async(run_ffmpeg, arguments, result_path)
 
 def run_ffmpeg(arguments, outputFilePath):
     ui.show_busy(input1)
@@ -21,27 +39,13 @@ def run_ffmpeg(arguments, outputFilePath):
     try:
         with open(outputFilePath, "w") as f:
             subprocess.run(arguments, **platform_args, stdout=f, stderr=f)
+            print(load_result())
         ui.show_success("Successfully processed. (ffmpeg)")
     except Exception as e:
         ui.show_error("Something went wrong. (ffmpeg)")
     finally:
         ui.finish_busy(input1)
 
-def compare(dialog: ap.Dialog):
-    input2 = dialog.get_value("input2")
-    ffmpeg_path = ffmpeg_helper.get_ffmpeg_fullpath()
-    result_path = ctx.folder + "/psnr.txt"
-    arguments = [
-            ffmpeg_path,                
-            "-i", input1,
-            "-i", input2,
-            "-lavfi", "scale2ref,psnr=stats_file=-" ,
-            "-an",
-            "-f", "null",
-            "-"
-        ]
-    dialog.close()
-    ctx.run_async(run_ffmpeg, arguments, result_path)
 
 def create_dialog():
     settings = aps.Settings("comparevideo")
@@ -55,5 +59,25 @@ def create_dialog():
     dialog.add_button("Compare", callback=compare)
 
     dialog.show(settings)
+
+def load_result():
+    with open(ctx.folder + "/psnr.txt") as result_file:
+        lines = result_file.readlines()
+        n_values = []
+        mse_avg_values = []
+        pattern = re.compile(r'n:(\d*) mse_avg:(\d*\.\d*)')
+    for line in lines:
+        match = pattern.match(line)
+        if match:
+            n_values.append(int(match.group(1)))
+            mse_avg_values.append(float(match.group(2)))
+
+    
+    plt.plot(n_values, mse_avg_values)
+    plt.xlabel('n')
+    plt.ylabel('mse_avg')
+
+    # グラフを画像として保存する
+    plt.savefig(ctx.folder + '/graph.png')
 
 ffmpeg_helper.guarantee_ffmpeg(create_dialog)
