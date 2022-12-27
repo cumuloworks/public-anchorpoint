@@ -1,11 +1,9 @@
 import platform
 import anchorpoint as ap
 import apsync as aps
-import os
 import ffmpeg_helper
 import subprocess
 import re
-import sys
 import matplotlib.pyplot as plt
 
 ctx = ap.Context.instance()
@@ -46,7 +44,6 @@ def run_ffmpeg(arguments, outputFilePath):
     finally:
         ui.finish_busy(input1)
 
-
 def create_dialog():
     settings = aps.Settings("comparevideo")
     settings.remove("filename")
@@ -71,13 +68,11 @@ def load_result():
         if match:
             n_values.append(int(match.group(1)))
             mse_avg_values.append(float(match.group(2)))
-
     
     plt.plot(n_values, mse_avg_values)
     plt.xlabel('n')
     plt.ylabel('mse_avg')
 
-    # グラフを画像として保存する
     plt.savefig(ctx.folder + '/graph.png')
 
 ffmpeg_helper.guarantee_ffmpeg(create_dialog)
