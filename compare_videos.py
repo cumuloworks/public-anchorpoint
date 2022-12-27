@@ -29,19 +29,18 @@ def run_ffmpeg(arguments):
 def convert(dialog: ap.Dialog):
     input2 = dialog.get_value("input2")
     ffmpeg_path = ffmpeg_helper.get_ffmpeg_fullpath()
-    print(input1)
-    print(input2)
+    result_path = ctx.folder + "/psnr.txt"
     arguments = [
             ffmpeg_path,                
             "-i", input1,
             "-i", input2,
-            "-lavfi", "scale2ref,psnr=f=psnr.txt",
+            "-lavfi", "scale2ref,psnr=stats_file="+ result_path ,
             "-an",
             "-f", "null",
             "-"
         ]
-    print(arguments)
     dialog.close()
+    print(arguments)
     ctx.run_async(run_ffmpeg, arguments)
 
 def create_dialog():
