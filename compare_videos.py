@@ -5,56 +5,14 @@ import os
 import ffmpeg_helper
 import subprocess
 
+
 ctx = ap.Context.instance()
 ui = ap.UI()
 
-input_path = ctx.path
-input_folder = ctx.folder
-input_filename = ctx.filename
-input_suffix = ctx.suffix
+input1 = ctx.path
 
-def get_newpath():
-    input_filename_no_version = input_filename
-    version_string = ""
-    
-    for c in reversed(input_filename_no_version):
-        if c.isnumeric():
-            version_string = c + version_string
-        else:
-            break
-
-    version = 1
-    number_of_version_digits = len(version_string)
-    if number_of_version_digits > 0:
-        input_filename_no_version = input_filename_no_version[0:-number_of_version_digits]
-        if input_filename_no_version.endswith("v"):
-            input_filename_no_version = input_filename_no_version[0:-1]
-
-        if input_filename_no_version.endswith("_"):
-            input_filename_no_version = input_filename_no_version[0:-1]
-
-        try:
-            version = int(version_string)
-            version = version + 1
-        except:
-            pass
-    else:
-        number_of_version_digits = 3
-
-    while True:
-        new_path = os.path.join(input_folder, f"{input_filename_no_version}_v{str(version).zfill(number_of_version_digits)}.{input_suffix}")
-        if not os.path.exists(new_path): 
-            return new_path
-        else:
-            version = version + 1
-
-def get_filename_text():
-    new_path = get_newpath()
-    new_filename = os.path.basename(new_path)
-    return f"This will create a new file: <b>{new_filename}</b>"
-
-def run_ffmpeg(arguments, remove_audio):
-    ui.show_busy(input_path)
+def run_ffmpeg(arguments):
+    ui.show_busy(input1)
     platform_args = {}
     if platform.system() == "Windows":
         from subprocess import CREATE_NO_WINDOW
@@ -62,69 +20,38 @@ def run_ffmpeg(arguments, remove_audio):
         
     try:
         subprocess.check_call(arguments, **platform_args)
-        if remove_audio:
-            ui.show_success("Audio Removed")
-        else:
-            ui.show_success("Audio Changed")
+        ui.show_success("Success")
     except Exception as e:
-        if remove_audio:
-            ui.show_error("Could not remove audio")
-        else:
-            ui.show_error("Could not change audio", "Make sure you have selected a valid audio file")
+        ui.show_error("Fail")
     finally:
-        ui.finish_busy(input_path)
+        ui.finish_busy(input1)
 
 def convert(dialog: ap.Dialog):
-    remove_audio = dialog.get_value("remove")
-    longest = dialog.get_value("longest")
-    audio = dialog.get_value("newaudioinput")
+    input2 = dialog.get_value("input2")
     ffmpeg_path = ffmpeg_helper.get_ffmpeg_fullpath()
-    new_path = get_newpath()
-
-    if remove_audio:
-        arguments = [
+    print(input1)
+    print(input2)
+    arguments = [
             ffmpeg_path,                
-            "-i", input_path,
-            "-c", "copy",
-            "-map", "0:v:0",
-            new_path
+            "-i", input1,
+            "-i", input2,
+            "-lavfi", "scale2ref,psnr=f=psnr.txt",
+            "-an",
+            "-f", "null",
+            "-"
         ]
-    else:
-        arguments = [
-            ffmpeg_path,                
-            "-i", input_path,
-            "-i", audio,
-            "-map", "0:v:0",
-            "-map", "1:a:0"
-        ]
-
-        if input_suffix == "mp4":
-            arguments.append("-c:v")
-            arguments.append("copy")
-            arguments.append("-c:a")
-            arguments.append("aac")
-        else:
-            arguments.append("-c")
-            arguments.append("copy")
-
-        if not longest:
-            arguments.append("-shortest")
-
-        arguments.append(new_path)
-
+    print(arguments)
     dialog.close()
-    ctx.run_async(run_ffmpeg, arguments, remove_audio)
+    ctx.run_async(run_ffmpeg, arguments)
 
 def create_dialog():
-    settings = aps.Settings("audiovideo")
-    remove_audio = settings.get("remove", False)
+    settings = aps.Settings("comparevideo")
     settings.remove("filename")
 
     dialog = ap.Dialog()
     dialog.title = "Compare Videos..."
     dialog.icon = ctx.icon
-    dialog.add_text(get_filename_text(), var="filename")
-    dialog.add_text("Compare to", var="input2text").add_input(browse=ap.BrowseType.File, var="input2", browse_path=input_folder)
+    dialog.add_text("Compare to", var="input2text").add_input(browse=ap.BrowseType.File, var="input2", browse_path=ctx.folder)
     dialog.add_info("Select a video file to be compared.", var="info")
     dialog.add_button("Compare", callback=convert)
 
