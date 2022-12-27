@@ -18,6 +18,6 @@ action:
 
 
   #Where to register this action: on all files matching the filter
-register:
-  file:
-    filter: "*.mov;*.MOV;*.m4v;*.mpg;*.avi;*.wmv;*.3gp;*.3gp2;*.avchd;*.dv;*.mkv"
+  register:
+    file:
+     filter: "*.mov;*.MOV;*.m4v;*.mpg;*.avi;*.wmv;*.3gp;*.3gp2;*.avchd;*.dv;*.mkv"
