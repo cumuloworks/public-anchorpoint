@@ -5,19 +5,21 @@
 
 version: 1.0
 action:
-  name: Compare Video...
+  name: Compare Videos...
 
   version: 1
   id: user::E7W9GNAO4U
   category: user
-  type: command
-  author: "Cumuloworks "
+  type: python
+  author: "Cumuloworks"
   description: "Compare two similar videos and show graph"
   icon:
-    path: :/icons/refresh.svg
+    path: :/icons/magnifier.svg
 
+  script: compare_videos.py
 
   #Where to register this action: on all files matching the filter
   register:
     file:
-     filter: "*.mov;*.MOV;*.m4v;*.mpg;*.avi;*.wmv;*.3gp;*.3gp2;*.avchd;*.dv;*.mkv"
+      enable: true
+      filter: "*.mp4;*.mov;*.MOV;*.m4v;*.mpg;*.avi;*.wmv;*.3gp;*.3gp2;*.avchd;*.dv;*.mkv"
