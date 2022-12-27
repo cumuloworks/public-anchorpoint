@@ -11,7 +11,7 @@ ui = ap.UI()
 
 input1 = ctx.path
 
-def run_ffmpeg(arguments):
+def run_ffmpeg(arguments, outputFilePath):
     ui.show_busy(input1)
     platform_args = {}
     if platform.system() == "Windows":
@@ -19,14 +19,15 @@ def run_ffmpeg(arguments):
         platform_args = {"creationflags":CREATE_NO_WINDOW}
         
     try:
-        subprocess.check_call(arguments, **platform_args)
-        ui.show_success("Success")
+        with open(outputFilePath, "w") as f:
+            subprocess.run(arguments, **platform_args, stdout=f, stderr=f)
+        ui.show_success("Successfully processed. (ffmpeg)")
     except Exception as e:
-        ui.show_error("Fail")
+        ui.show_error("Something went wrong. (ffmpeg)")
     finally:
         ui.finish_busy(input1)
 
-def convert(dialog: ap.Dialog):
+def compare(dialog: ap.Dialog):
     input2 = dialog.get_value("input2")
     ffmpeg_path = ffmpeg_helper.get_ffmpeg_fullpath()
     result_path = ctx.folder + "/psnr.txt"
@@ -34,14 +35,13 @@ def convert(dialog: ap.Dialog):
             ffmpeg_path,                
             "-i", input1,
             "-i", input2,
-            "-lavfi", "scale2ref,psnr=stats_file="+ result_path ,
+            "-lavfi", "scale2ref,psnr=stats_file=-" ,
             "-an",
             "-f", "null",
             "-"
         ]
     dialog.close()
-    print(arguments)
-    ctx.run_async(run_ffmpeg, arguments)
+    ctx.run_async(run_ffmpeg, arguments, result_path)
 
 def create_dialog():
     settings = aps.Settings("comparevideo")
@@ -52,7 +52,7 @@ def create_dialog():
     dialog.icon = ctx.icon
     dialog.add_text("Compare to", var="input2text").add_input(browse=ap.BrowseType.File, var="input2", browse_path=ctx.folder)
     dialog.add_info("Select a video file to be compared.", var="info")
-    dialog.add_button("Compare", callback=convert)
+    dialog.add_button("Compare", callback=compare)
 
     dialog.show(settings)
 
