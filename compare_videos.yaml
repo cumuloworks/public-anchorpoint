@@ -1,0 +1,25 @@
+# Anchorpoint Markup Language
+# Predefined Variables: e.g. ${path}
+# Environment Variables: e.g. ${MY_VARIABLE}
+# Full documentation: https://docs.anchorpoint.app/Actions/Reference
+
+version: 1.0
+action:
+  name: Compare Videos...
+
+  version: 1
+  id: user::E7W9GNAO4U
+  category: user
+  type: python
+  author: "Cumuloworks"
+  description: "Compare two similar videos and show graph"
+  icon:
+    path: :/icons/magnifier.svg
+
+  script: compare_videos.py
+
+  #Where to register this action: on all files matching the filter
+  register:
+    file:
+      enable: true
+      filter: "*.mp4;*.mov;*.MOV;*.m4v;*.mpg;*.avi;*.wmv;*.3gp;*.3gp2;*.avchd;*.dv;*.mkv"
