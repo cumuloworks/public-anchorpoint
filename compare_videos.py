@@ -78,8 +78,9 @@ def load_result():
 
     plt.clf()
     plt.plot(n_values, mse_avg_values)
-    plt.xlabel('n')
-    plt.ylabel('mse_avg')
+    plt.xlabel('frames')
+    plt.ylabel('difference')
+    plt.title(input1_filename + " vs " + input2_filename)
 
     plt.savefig(ctx.folder + '/graph.png')
 
