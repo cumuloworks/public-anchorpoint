@@ -4,15 +4,19 @@ import apsync as aps
 import ffmpeg_helper
 import subprocess
 import re
-import matplotlib.pyplot as plt
+import os
+# import matplotlib.pyplot as plt
 
 ctx = ap.Context.instance()
 ui = ap.UI()
 
 input1 = ctx.path
+input1_filename = ctx.filename + "." + ctx.suffix
 
 def compare(dialog: ap.Dialog):
     input2 = dialog.get_value("input2")
+    global input2_filename
+    input2_filename = os.path.basename(input2)
     ffmpeg_path = ffmpeg_helper.get_ffmpeg_fullpath()
     result_path = ctx.folder + "/psnr.txt"
     arguments = [
@@ -63,16 +67,19 @@ def load_result():
         n_values = []
         mse_avg_values = []
         pattern = re.compile(r'n:(\d*) mse_avg:(\d*\.\d*)')
+
     for line in lines:
         match = pattern.match(line)
         if match:
             n_values.append(int(match.group(1)))
             mse_avg_values.append(float(match.group(2)))
     
-    plt.plot(n_values, mse_avg_values)
-    plt.xlabel('n')
-    plt.ylabel('mse_avg')
+    max_index = [i for i, x in enumerate(mse_avg_values) if x == max(mse_avg_values)][0]
+    return(input1_filename + " vs " + input2_filename + "\nMAX DIFFERENCE: " + str(max(mse_avg_values)) + " (at " + str(max_index) + ")\nFRAME COMPARED: " + str(max(n_values)))
+    # plt.plot(n_values, mse_avg_values)
+    # plt.xlabel('n')
+    # plt.ylabel('mse_avg')
 
-    plt.savefig(ctx.folder + '/graph.png')
+    # plt.savefig(ctx.folder + '/graph.png')
 
 ffmpeg_helper.guarantee_ffmpeg(create_dialog)
