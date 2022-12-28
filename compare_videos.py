@@ -5,7 +5,7 @@ import ffmpeg_helper
 import subprocess
 import re
 import os
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 ctx = ap.Context.instance()
 ui = ap.UI()
@@ -75,11 +75,15 @@ def load_result():
             mse_avg_values.append(float(match.group(2)))
     
     max_index = [i for i, x in enumerate(mse_avg_values) if x == max(mse_avg_values)][0]
-    return(input1_filename + " vs " + input2_filename + "\nMAX DIFFERENCE: " + str(max(mse_avg_values)) + " (at " + str(max_index) + ")\nFRAME COMPARED: " + str(max(n_values)))
-    # plt.plot(n_values, mse_avg_values)
-    # plt.xlabel('n')
-    # plt.ylabel('mse_avg')
 
-    # plt.savefig(ctx.folder + '/graph.png')
+    plt.clf()
+    plt.plot(n_values, mse_avg_values)
+    plt.xlabel('frames')
+    plt.ylabel('difference')
+    plt.title(input1_filename + " vs " + input2_filename)
+
+    plt.savefig(ctx.folder + '/graph.png')
+
+    return(input1_filename + " vs " + input2_filename + "\nMAX DIFFERENCE: " + str(max(mse_avg_values)) + " (at " + str(max_index) + ")\nFRAME COMPARED: " + str(max(n_values)))
 
 ffmpeg_helper.guarantee_ffmpeg(create_dialog)

@@ -16,6 +16,8 @@ action:
   icon:
     path: :/icons/magnifier.svg
 
+  python_packages:    
+  - matplotlib
   script: compare_videos.py
 
   #Where to register this action: on all files matching the filter
