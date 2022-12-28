@@ -18,7 +18,7 @@ def compare(dialog: ap.Dialog):
     global input2_filename
     input2_filename = os.path.basename(input2)
     ffmpeg_path = ffmpeg_helper.get_ffmpeg_fullpath()
-    result_path = ctx.folder + "/psnr.txt"
+    result_path = "psnr.txt"
     arguments = [
             ffmpeg_path,                
             "-i", input1,
@@ -62,7 +62,7 @@ def create_dialog():
     dialog.show(settings)
 
 def load_result():
-    with open(ctx.folder + "/psnr.txt") as result_file:
+    with open("psnr.txt") as result_file:
         lines = result_file.readlines()
         n_values = []
         mse_avg_values = []
