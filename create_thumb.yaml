@@ -1,0 +1,31 @@
+# Anchorpoint Markup Language
+# Predefined Variables: e.g. ${path}
+# Environment Variables: e.g. ${MY_VARIABLE}
+# Full documentation: https://docs.anchorpoint.app/Actions/Reference
+
+version: 1.0
+action:
+  name: Create Thumb
+
+  version: 1
+  id: user::JR7F737SHF
+  category: user
+  type: command
+  author: "Cumuloworks "
+  description: "Create thunbnail from the 1st frame."
+  icon:
+    path: :/icons/refresh.svg
+
+  command: "ffmpeg"
+  arguments: "-i ${path} -frames:v 1 ${filename}.jpg"
+
+  register:
+    file:
+      enable: true
+      filter: "*.mov;*.avi;*.wmv;*.mkv"
+  
+  toast:
+    success:
+      message: "Successfully created."
+    error:
+      message: "Something went wrong."
