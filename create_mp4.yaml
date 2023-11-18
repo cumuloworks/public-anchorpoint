@@ -22,7 +22,7 @@ action:
   register:
     file:
       enable: true
-      filter: "*.mov;*.avi;*.wmv;*.mkv"
+      filter: "*.mov;*.avi;*.wmv;*.mp4;*.mkv"
   
   toast:
     success:
